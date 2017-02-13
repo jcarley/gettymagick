@@ -11,7 +11,8 @@ if [ -z "$PROJECT" ]; then
   exit 127
 fi
 
-curl -s https://raw.githubusercontent.com/h2non/bimg/master/preinstall.sh | sudo bash -
+apt-get update && apt-get install lsb-release libgsf-1-dev -y
+curl -s https://raw.githubusercontent.com/h2non/bimg/master/preinstall.sh | bash -
 
 # Get the git commit information
 GIT_COMMIT="$(git rev-parse --short HEAD)"
@@ -39,7 +40,7 @@ for GOOS in $XC_OS; do
     printf "%s%20s %s\n" "-->" "${GOOS}/${GOARCH}:" "${PROJECT}"
     env -i \
       PATH="$PATH" \
-      CGO_ENABLED=0 \
+      CGO_ENABLED=1 \
       GOPATH="$GOPATH" \
       GOROOT="$GOROOT" \
       GOOS="${GOOS}" \

@@ -4,7 +4,7 @@ CURRENT_DIR := $(dir $(realpath $(MKFILE_PATH)))
 CURRENT_DIR := $(CURRENT_DIR:/=)
 
 # Get the project metadata
-GOVERSION := 1.7.4
+GOVERSION := 1.7.5
 VERSION := 0.0.1
 PROJECT := github.com/jcarley/gettymagick
 OWNER := $(dir $(PROJECT))
@@ -44,6 +44,10 @@ bootstrap:
 		go get -u "$$t"; \
 	done
 
+docker:
+	@echo "==> Building Docker image for ${PROJECT}..."
+	@docker build --rm --tag="gettymagick:latest" .
+
 # bin builds the project by invoking the compile script inside of a Docker
 # container. Invokers can override the target OS or architecture using
 # environment variables.
@@ -67,6 +71,27 @@ bin:
 		--workdir="/go/src/${PROJECT}" \
 		--volume="${CURRENT_DIR}:/go/src/${PROJECT}" \
 		"golang:${GOVERSION}" /usr/bin/env sh -c "scripts/compile.sh"
+
+shell:
+	@echo "==> Starting a shell for ${PROJECT}..."
+	@docker run \
+		--interactive \
+		--tty \
+		--rm \
+		--dns=8.8.8.8 \
+		--env="VERSION=${VERSION}" \
+		--env="PROJECT=${PROJECT}" \
+		--env="OWNER=${OWNER}" \
+		--env="NAME=${NAME}" \
+		--env="GOMAXPROCS=${GOMAXPROCS}" \
+		--env="GOTAGS=${GOTAGS}" \
+		--env="XC_OS=${XC_OS}" \
+		--env="XC_ARCH=${XC_ARCH}" \
+		--env="XC_EXCLUDE=${XC_EXCLUDE}" \
+		--env="DIST=${DIST}" \
+		--workdir="/go/src/${PROJECT}" \
+		--volume="${CURRENT_DIR}:/go/src/${PROJECT}" \
+		"gettymagick:latest" /bin/bash
 
 # deps gets all the dependencies for this repository and vendors them.
 deps:
@@ -107,5 +132,5 @@ convey:
 		--volume="${CURRENT_DIR}:/go/src/${PROJECT}" \
 		"golang:${GOVERSION}" /usr/bin/env sh -c "scripts/testgoconvey.sh"
 
-.PHONY: bin bin-local bootstrap deps dev dist docker docker-push generate test test-race convey
+.PHONY: bin bin-local bootstrap deps dev dist docker docker-push generate test test-race convey debug
 

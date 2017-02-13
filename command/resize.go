@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	bimg "github.com/h2non/bimg"
 	"github.com/mitchellh/cli"
+	bimg "gopkg.in/h2non/bimg.v1"
 )
 
 type ResizeCommand struct {
