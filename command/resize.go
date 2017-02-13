@@ -23,11 +23,18 @@ func (this *ResizeCommand) Run(args []string) int {
 
 	sourceFile := args[0]
 	destinationFile := args[1]
-	size := args[2]
 
-	sizeValue := strings.Split(size, "=")
+	sizeArg := args[2]
+	sizeValue := strings.Split(sizeArg, "=")
 
-	err := this.resizeImage(sourceFile, destinationFile, sizeValue[1])
+	qualityArg := args[3]
+	qualityValue := strings.Split(qualityArg, "=")
+	quality, err := strconv.Atoi(qualityValue[1])
+	if err != nil {
+		quality = 60
+	}
+
+	err = this.resizeImage(sourceFile, destinationFile, sizeValue[1], quality)
 	if err != nil {
 		this.Ui.Info("Failed")
 		return 1
@@ -39,7 +46,7 @@ func (this *ResizeCommand) Run(args []string) int {
 
 func (this *ResizeCommand) Help() string {
 	helpText := `
-Usage: gettymagick resize <source> <destination> size=WxH
+Usage: gettymagick resize <source> <destination> size=WxH quality=#
 
 	Resizes an image.
 `
@@ -50,7 +57,7 @@ func (this *ResizeCommand) Synopsis() string {
 	return "Resizes an image."
 }
 
-func (this *ResizeCommand) resizeImage(sourceFile, destinationFile, sizeValue string) error {
+func (this *ResizeCommand) resizeImage(sourceFile, destinationFile, sizeValue string, quality int) error {
 	buffer, err := bimg.Read(sourceFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -62,7 +69,13 @@ func (this *ResizeCommand) resizeImage(sourceFile, destinationFile, sizeValue st
 	width, _ := strconv.Atoi(widthValue)
 	height, _ := strconv.Atoi(heightValue)
 
-	newImage, err := bimg.NewImage(buffer).Resize(width, height)
+	options := bimg.Options{
+		Width:   width,
+		Height:  height,
+		Embed:   true,
+		Quality: quality,
+	}
+	newImage, err := bimg.NewImage(buffer).Process(options)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
