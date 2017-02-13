@@ -70,7 +70,7 @@ bin:
 		--env="DIST=${DIST}" \
 		--workdir="/go/src/${PROJECT}" \
 		--volume="${CURRENT_DIR}:/go/src/${PROJECT}" \
-		"golang:${GOVERSION}" /usr/bin/env sh -c "scripts/compile.sh"
+		"gettymagick:latest" /usr/bin/env sh -c "scripts/compile.sh"
 
 shell:
 	@echo "==> Starting a shell for ${PROJECT}..."

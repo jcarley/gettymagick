@@ -11,9 +11,6 @@ if [ -z "$PROJECT" ]; then
   exit 127
 fi
 
-apt-get update && apt-get install lsb-release libgsf-1-dev -y
-curl -s https://raw.githubusercontent.com/h2non/bimg/master/preinstall.sh | bash -
-
 # Get the git commit information
 GIT_COMMIT="$(git rev-parse --short HEAD)"
 GIT_DIRTY="$(test -n "$(git status --porcelain)" && echo "+CHANGES" || true)"
