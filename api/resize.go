@@ -34,7 +34,7 @@ func ResizeImage(options Options) error {
 
 	bimg.Write(options.Destination, newImage)
 
-	newImage = nil
+	buffer = buffer[:0]
 	buffer = nil
 
 	return nil
