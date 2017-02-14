@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	. "github.com/jcarley/gettymagick/testing"
+	. "github.com/smartystreets/goconvey/convey"
 
 	"github.com/jcarley/gettymagick/api"
 	"github.com/mitchellh/cli"
@@ -39,9 +39,12 @@ func TestRun(t *testing.T) {
 
 	cmd.Run(args)
 
-	AssertTrue(t, expectedOptions.Source == sourceFile, "Source should equal masters/source.jpg")
-	AssertTrue(t, expectedOptions.Destination == destFile, "Destination should equal thumbnail/source.jpg")
-	AssertTrue(t, expectedOptions.Quality == 60, "Quality should equal 60")
-	AssertTrue(t, expectedOptions.Width == 400, "Width should equal 400")
-	AssertTrue(t, expectedOptions.Height == 600, "Width should equal 600")
+	Convey("Options were set from args", t, func() {
+		So(expectedOptions.Source, ShouldEqual, sourceFile)
+		So(expectedOptions.Destination, ShouldEqual, destFile)
+		So(expectedOptions.Quality, ShouldEqual, 60)
+		So(expectedOptions.Width, ShouldEqual, 400)
+		So(expectedOptions.Height, ShouldEqual, 600)
+	})
+
 }
