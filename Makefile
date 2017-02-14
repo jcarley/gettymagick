@@ -10,7 +10,8 @@ PROJECT := github.com/jcarley/gettymagick
 OWNER := $(dir $(PROJECT))
 OWNER := $(notdir $(OWNER:/=))
 NAME := $(notdir $(PROJECT))
-EXTERNAL_TOOLS =
+EXTERNAL_TOOLS = "github.com/smartystreets/goconvey" \
+								 "github.com/mitchellh/gox"
 
 # Current system information (this is the invoking system)
 ME_OS = $(shell go env GOOS)
