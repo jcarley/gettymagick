@@ -1,4 +1,4 @@
-package api
+package lib
 
 import (
 	"fmt"
@@ -22,12 +22,21 @@ func ResizeImage(options Options) error {
 	}
 
 	o := bimg.Options{
-		Width:   options.Width,
-		Height:  options.Height,
-		Quality: options.Quality,
-		Embed:   true,
+		Width:       options.Width,
+		Height:      options.Height,
+		Quality:     options.Quality,
+		Embed:       true,
+		Compression: 1,
 	}
-	newImage, err := bimg.NewImage(buffer).Process(o)
+
+	img := bimg.NewImage(buffer)
+	// metadata, err := img.Metadata()
+	// if metadata.Orientation != 1 {
+	// fmt.Printf("%s - %#v\n", options.Source, metadata)
+	// }
+
+	newImage, err := img.Process(o)
+
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

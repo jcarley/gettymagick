@@ -5,8 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/jcarley/gettymagick/api"
 	"github.com/jcarley/gettymagick/command"
+	"github.com/jcarley/gettymagick/lib"
 	"github.com/mitchellh/cli"
 )
 
@@ -30,7 +30,7 @@ func init() {
 		"resize": func() (cli.Command, error) {
 			return &command.ResizeCommand{
 				Ui:          ui,
-				ResizeImage: api.ResizeImage,
+				ResizeImage: lib.ResizeImage,
 			}, nil
 		},
 

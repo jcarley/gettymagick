@@ -5,13 +5,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jcarley/gettymagick/api"
+	"github.com/jcarley/gettymagick/lib"
 	"github.com/mitchellh/cli"
 )
 
 type ResizeCommand struct {
 	Ui          cli.Ui
-	ResizeImage func(options api.Options) error
+	ResizeImage func(options lib.Options) error
 }
 
 func (this *ResizeCommand) Run(args []string) int {
@@ -25,11 +25,15 @@ func (this *ResizeCommand) Run(args []string) int {
 	var destinationFile string
 	var sizeArg string
 	var qualityArg string
+	var compressionArg string
 
 	flags := flag.NewFlagSet("resize", flag.ContinueOnError)
-	flags.StringVar(&sizeArg, "size", "x600", "the size to resize thumbnails to")
-	flags.StringVar(&qualityArg, "quality", "80", "the quality to make the thumbnails")
+	flags.StringVar(&sizeArg, "size", "x600", "the size to resize the image to")
+	flags.StringVar(&qualityArg, "quality", "80", "the quality to make the image")
+	flags.StringVar(&compressionArg, "compression", "1", "the compression to apply to this image")
+
 	if err := flags.Parse(args); err != nil {
+		this.Ui.Error(err.Error())
 		return 1
 	}
 
@@ -50,12 +54,31 @@ func (this *ResizeCommand) Run(args []string) int {
 
 	widthValue := dimensions[0]
 	heightValue := dimensions[1]
-	width, _ := strconv.Atoi(widthValue)
-	height, _ := strconv.Atoi(heightValue)
+	width, err := strconv.Atoi(widthValue)
+	if err != nil {
+		this.Ui.Error("invalid width supplied")
+		return 1
+	}
 
-	quality, _ := strconv.Atoi(qualityArg)
+	height, err_ := strconv.Atoi(heightValue)
+	if err != nil {
+		this.Ui.Error("invalid height supplied")
+		return 1
+	}
 
-	options := api.Options{
+	quality, err := strconv.Atoi(qualityArg)
+	if err != nil {
+		this.Ui.Warn("invalid quality supplied, defaulting to 60%")
+		quality = 60
+	}
+
+	compression, err := strconv.Atoi(compressionArg)
+	if err != nil {
+		this.Ui.Warn("invalid compression supplied, defaulting to 1")
+		compression = 1
+	}
+
+	options := lib.Options{
 		Source:      sourceFile,
 		Destination: destinationFile,
 		Quality:     quality,
@@ -65,7 +88,7 @@ func (this *ResizeCommand) Run(args []string) int {
 
 	err := this.ResizeImage(options)
 	if err != nil {
-		this.Ui.Info("Failed")
+		this.Ui.Error(err.Error())
 		return 1
 	}
 
