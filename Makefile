@@ -37,6 +37,8 @@ GOTAGS ?=
 # Number of procs to use
 GOMAXPROCS ?= 4
 
+default: bin
+
 # bootstrap installs the necessary go tools for development or build
 bootstrap:
 	@echo "==> Bootstrapping ${PROJECT}..."
