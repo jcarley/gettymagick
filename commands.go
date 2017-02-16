@@ -12,6 +12,7 @@ import (
 
 // Commands is the mapping of all the available Serf commands.
 var Commands map[string]cli.CommandFactory
+var UiWriter *cli.UiWriter
 
 func init() {
 	prefixedUi := &cli.PrefixedUi{
@@ -23,6 +24,10 @@ func init() {
 		InfoColor:  cli.UiColorGreen,
 		ErrorColor: cli.UiColorRed,
 		Ui:         prefixedUi,
+	}
+
+	UiWriter = &cli.UiWriter{
+		Ui: ui,
 	}
 
 	Commands = map[string]cli.CommandFactory{

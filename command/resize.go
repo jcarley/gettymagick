@@ -2,6 +2,7 @@ package command
 
 import (
 	"flag"
+	"log"
 	"strconv"
 	"strings"
 
@@ -39,6 +40,7 @@ func (this *ResizeCommand) Run(args []string) int {
 
 	remainArgs := flags.Args()
 	if len(remainArgs) < 2 {
+		log.Printf("Gettymagick was called with to few args\n")
 		this.Ui.Info(this.Help())
 		return 1
 	}
@@ -48,47 +50,67 @@ func (this *ResizeCommand) Run(args []string) int {
 
 	dimensions := strings.Split(sizeArg, "x")
 	if len(dimensions) < 2 {
+		log.Printf("An invalid dimension was supplied for '%s'\n", sourceFile)
 		this.Ui.Info(this.Help())
 		return 1
 	}
 
 	widthValue := dimensions[0]
 	heightValue := dimensions[1]
+
 	width, err := strconv.Atoi(widthValue)
 	if err != nil {
-		this.Ui.Error("invalid width supplied")
-		return 1
+		numErr := err.(*strconv.NumError)
+
+		// the string was empty, maintaining aspect ratio with height
+		if numErr.Err == strconv.ErrSyntax && numErr.Num == "" {
+			width = 0
+		} else {
+			// something else went wrong
+			log.Printf("invalid width supplied for '%s'\n", sourceFile)
+			return 1
+		}
+
 	}
 
-	height, err_ := strconv.Atoi(heightValue)
+	height, err := strconv.Atoi(heightValue)
 	if err != nil {
-		this.Ui.Error("invalid height supplied")
-		return 1
+		numErr := err.(*strconv.NumError)
+
+		// the string was empty, maintaining aspect ratio with width
+		if numErr.Err == strconv.ErrSyntax && numErr.Num == "" {
+			height = 0
+		} else {
+			// something else went wrong
+			log.Printf("invalid height supplied for '%s'\n", sourceFile)
+			return 1
+		}
 	}
 
 	quality, err := strconv.Atoi(qualityArg)
 	if err != nil {
-		this.Ui.Warn("invalid quality supplied, defaulting to 60%")
+		log.Printf("invalid quality supplied for '%s', default to 60%\n", sourceFile)
 		quality = 60
 	}
 
 	compression, err := strconv.Atoi(compressionArg)
 	if err != nil {
-		this.Ui.Warn("invalid compression supplied, defaulting to 1")
+		log.Printf("invalid compression supplied for '%s', default to 1\n", sourceFile)
 		compression = 1
 	}
 
 	options := lib.Options{
-		Source:      sourceFile,
+		Compression: compression,
 		Destination: destinationFile,
-		Quality:     quality,
-		Width:       width,
 		Height:      height,
+		Quality:     quality,
+		Source:      sourceFile,
+		Width:       width,
 	}
 
-	err := this.ResizeImage(options)
+	err = this.ResizeImage(options)
 	if err != nil {
-		this.Ui.Error(err.Error())
+		log.Printf("An error occured for '%s': %s\n", sourceFile, err.Error())
 		return 1
 	}
 
@@ -98,7 +120,7 @@ func (this *ResizeCommand) Run(args []string) int {
 
 func (this *ResizeCommand) Help() string {
 	helpText := `
-Usage: gettymagick resize -size=WxH -quality=# <source> <destination>
+Usage: gettymagick resize -size=WxH -quality=# -compression=$ <source> <destination>
 
 	Resizes an image.
 `

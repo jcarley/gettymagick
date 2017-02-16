@@ -8,11 +8,12 @@ import (
 )
 
 type Options struct {
-	Source      string
+	Compression int
 	Destination string
-	Width       int
 	Height      int
 	Quality     int
+	Source      string
+	Width       int
 }
 
 func ResizeImage(options Options) error {
@@ -22,18 +23,14 @@ func ResizeImage(options Options) error {
 	}
 
 	o := bimg.Options{
-		Width:       options.Width,
+		Compression: options.Compression,
+		Embed:       true,
 		Height:      options.Height,
 		Quality:     options.Quality,
-		Embed:       true,
-		Compression: 1,
+		Width:       options.Width,
 	}
 
 	img := bimg.NewImage(buffer)
-	// metadata, err := img.Metadata()
-	// if metadata.Orientation != 1 {
-	// fmt.Printf("%s - %#v\n", options.Source, metadata)
-	// }
 
 	newImage, err := img.Process(o)
 

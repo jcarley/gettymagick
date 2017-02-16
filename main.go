@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"io"
+	"log"
 	"os"
 	"runtime"
 
@@ -14,6 +15,22 @@ func main() {
 }
 
 func realMain() int {
+
+	// setup application logging
+	log.SetFlags(log.LstdFlags)
+
+	logFile, err := os.OpenFile("logs/gettymagick.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln("Failed to open log file: ", err)
+	}
+
+	multiWriter := io.MultiWriter(UiWriter, logFile)
+	log.SetOutput(multiWriter)
+
+	return wrappedMain()
+}
+
+func wrappedMain() int {
 
 	// Get the command line args. We shortcut "--version" and "-v" to
 	// just show the version.
@@ -36,7 +53,7 @@ func realMain() int {
 
 	exitCode, err := cli.Run()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error executing CLI: %s\n", err.Error())
+		log.Printf("Error executing CLI: %s\n", err.Error())
 		return 1
 	}
 
