@@ -10,7 +10,11 @@ import (
 )
 
 func main() {
-	runtime.GOMAXPROCS(4)
+	procs := runtime.NumCPU() - 2
+	if procs <= 0 {
+		procs = 1
+	}
+	runtime.GOMAXPROCS(procs)
 	os.Exit(realMain())
 }
 
