@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"os"
+	"time"
 
 	bimg "gopkg.in/h2non/bimg.v1"
 )
@@ -17,6 +18,10 @@ type Options struct {
 }
 
 func ResizeImage(options Options) error {
+
+	msg := fmt.Sprintf("Resizing %s", options.Source)
+	defer Benchmark(time.Now(), msg)
+
 	buffer, err := bimg.Read(options.Source)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
