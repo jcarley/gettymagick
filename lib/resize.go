@@ -13,6 +13,8 @@ import (
 
 func ResizeImage(options Options) error {
 
+	//TODO: I want to improve the logging of metrics.  I don't like the two
+	//      seperate lines being logged out.  I want one consise log message.
 	msg := fmt.Sprintf("Resizing %s", options.Source)
 	defer Benchmark(time.Now(), msg)
 
