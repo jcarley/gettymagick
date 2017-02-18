@@ -11,7 +11,8 @@ OWNER := $(dir $(PROJECT))
 OWNER := $(notdir $(OWNER:/=))
 NAME := $(notdir $(PROJECT))
 EXTERNAL_TOOLS = "github.com/smartystreets/goconvey" \
-								 "github.com/mitchellh/gox"
+								 "github.com/mitchellh/gox" \
+								 "github.com/ugorji/go/codec/codecgen"
 
 # Current system information (this is the invoking system)
 ME_OS = $(shell go env GOOS)

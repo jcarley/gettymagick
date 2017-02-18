@@ -33,6 +33,12 @@
 			"revisionTime": "2014-10-22T19:30:16Z"
 		},
 		{
+			"checksumSHA1": "CoxdaTYdPZNJXr8mJfLxye428N0=",
+			"path": "github.com/ugorji/go/codec",
+			"revision": "c88ee250d0221a57af388746f5cf03768c21d6e2",
+			"revisionTime": "2017-02-15T20:11:44Z"
+		},
+		{
 			"checksumSHA1": "0SIHiKpZ7earBAzuyvWOQv93Kgc=",
 			"path": "golang.org/x/sys/unix",
 			"revision": "aaabbdc969c3935a2a7f61efac801e7163c73a2a",
