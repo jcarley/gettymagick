@@ -2,7 +2,6 @@ package jsonutil
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 
@@ -43,7 +42,6 @@ func DecodeJSON(data []byte, out interface{}) error {
 
 // Decodes/Unmarshals the given io.Reader pointing to a JSON, into a desired object
 func DecodeJSONFromReader(r io.Reader, out interface{}) error {
-	err = codec.NewDecoderBytes(out, jh).Decode(&u2)
 	if r == nil {
 		return fmt.Errorf("'io.Reader' being decoded is nil")
 	}
@@ -51,11 +49,8 @@ func DecodeJSONFromReader(r io.Reader, out interface{}) error {
 		return fmt.Errorf("output parameter 'out' is nil")
 	}
 
-	dec := json.NewDecoder(r)
+	jh := new(codec.JsonHandle)
+	dec = codec.NewDecoder(r, jh)
 
-	// While decoding JSON values, intepret the integer values as `json.Number`s instead of `float64`.
-	dec.UseNumber()
-
-	// Since 'out' is an interface representing a pointer, pass it to the decoder without an '&'
-	return dec.Decode(out)
+	return dec.Decode(&out)
 }
