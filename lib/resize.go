@@ -13,10 +13,10 @@ import (
 
 func ResizeImage(options Options) error {
 
-	optionsJson, _ := jsonutil.EncodeJSONToString(&options)
 	msg := fmt.Sprintf("Resizing %s", options.Source)
 	defer Benchmark(time.Now(), msg)
 
+	optionsJson, _ := jsonutil.EncodeJSONToString(&options)
 	log.Printf("%s", optionsJson)
 
 	buffer, err := bimg.Read(options.Source)
