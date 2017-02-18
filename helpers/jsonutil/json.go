@@ -50,7 +50,7 @@ func DecodeJSONFromReader(r io.Reader, out interface{}) error {
 	}
 
 	jh := new(codec.JsonHandle)
-	dec = codec.NewDecoder(r, jh)
+	dec := codec.NewDecoder(r, jh)
 
 	return dec.Decode(&out)
 }
