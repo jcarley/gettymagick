@@ -8,15 +8,6 @@ import (
 	bimg "gopkg.in/h2non/bimg.v1"
 )
 
-type Options struct {
-	Compression int
-	Destination string
-	Height      int
-	Quality     int
-	Source      string
-	Width       int
-}
-
 func ResizeImage(options Options) error {
 
 	msg := fmt.Sprintf("Resizing %s", options.Source)
